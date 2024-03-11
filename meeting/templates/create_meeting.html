@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h1>Create Meeting</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <label for="title">Title:</label>
+        <input type="text" class="form-control" id="title" name="title"><br>
+        <label for="start_time">Start Time:</label>
+        <input type="datetime-local" class="form-control" id="start_time" name="start_time"><br>
+        <label for="duration">Duration (in minutes):</label>
+        <input type="number" class="form-control" id="duration" name="duration"><br>
+        <label for="organizer">Organizer:</label>
+        <input type="text" class="form-control" id="organizer" name="organizer"><br>
+        <button class='btn btn-primary' type="submit">Create Meeting</button>
+    </form>
+
+
+{% endblock %}

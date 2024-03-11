@@ -1,0 +1,21 @@
+{% if user.is_authenticated %}
+<nav class="col-md-3 col-lg-2 d-none d-md-block bg-light sidebar " style="padding-top: 100px;">
+  <div class="position-sticky">
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link active" href="#">Dashboard</a>
+      </li>
+      <br>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Users</a>
+      </li>
+      <br>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Meetings</a>
+      </li>
+      <br>
+      <!-- Add more sidebar items as needed -->
+    </ul>
+  </div>
+</nav>
+{% endif %}

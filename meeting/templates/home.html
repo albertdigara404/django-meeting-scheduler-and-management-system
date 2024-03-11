@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+
+<table class="table table-striped table-hover table-bordered">
+    <thead class="table-dark">
+      <tr>
+        <th scope="col">Meeting Name</th>
+        <th scope="col">StartTime</th>
+        <th scope="col">Duration</th>
+        <th scope="col">Time Remaining</th>
+        <th scope="col">Organizer</th>
+        <th scope="col">Join Link</th>
+        
+      </tr>
+    </thead>
+    <tbody>
+      
+  {% if meetings %}
+      {% for meeting in meetings %}
+          <tr>
+              <td>{{ meeting.title }} {{ record.last_name }}</td>
+              <td>{{ meeting.start_time }}</td>
+              <td>{{ meeting.duration }}</td>
+              <td>{{ meeting.start_time }}</td>
+              <td>{{ meeting.organizer }}</td>
+              <td><a href="#">Join</a></td>
+          </tr>
+      {% endfor %}
+  
+  {% endif %}
+  
+      
+        </tbody>
+      </table>
+  
+  
+  {% else %}
+  
+  <div class="col-md-6 offset-md-3">
+  <h1>Login</h1>
+  <br/>
+  
+  <form method="POST" action="#">
+      {% csrf_token %}
+  
+    <div class="mb-3">
+      <input type="text" class="form-control" name="username", placeholder="Username" required>
+      
+    </div><br/>
+    <div class="mb-3">
+      <input type="password" class="form-control" name="password", placeholder="Password" required>
+    </div>
+    <br/>
+    <button type="submit" class="btn btn-secondary">Login</button>
+  
+  </form>
+  
+  
+  
+  {% endif %}
+
+
+{% endblock %}
