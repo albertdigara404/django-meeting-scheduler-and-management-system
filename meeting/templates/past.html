@@ -1,5 +1,13 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
+{% block scripts %}
+
+  <script src="{% static 'main.js' %}" defer></script>
+
+{% endblock scripts %}
+
 {% block content %}
 
 {% if user.is_authenticated %}
@@ -38,9 +46,15 @@
         {% for meeting in past_meetings %}
         <tr>
           <td><a href="{% url 'meeting_details' meeting.id %}">{{ meeting.title }}</a></td>
-          <td>{{ meeting.start_time }}</td>
+          <td>
+            <div id="event-box">{{ meeting.start_time|date:"M d, Y H:m:s" }}</div>
+          </td>
           <td>{{ meeting.duration }}</td>
-          <td>{{ meeting.time_remaining }}</td>
+          <td>
+            <div id="countdown-box">
+              <div class="spinner-border" role="status" ></div>
+            </div>
+          </td>
           <td>{{ meeting.organizer }}</td>
           <!-- <td><a href="{{ meeting.join_link }}">Join</a></td> -->
         </tr>
@@ -53,8 +67,4 @@
 
 {% endblock %}
 
-<!-- {% block scripts %}
-<script>
 
-</script>
-{% endblock %} -->

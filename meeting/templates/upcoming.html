@@ -1,5 +1,13 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
+{% block scripts %}
+
+  <script src="{% static 'main.js' %}" defer></script>
+
+{% endblock scripts %}
+
 {% block content %}
 
 {% if user.is_authenticated %}
@@ -38,9 +46,15 @@
         {% for meeting in upcoming_meetings %}
         <tr>
           <td><a href="{% url 'meeting_details' meeting.id %}">{{ meeting.title }}</a></td>
-          <td>{{ meeting.start_time }}</td>
+          <td>
+            <div id="event-box">{{ meeting.start_time|date:"M d, Y H:m:s" }}</div>
+          </td>
           <td>{{ meeting.duration }}</td>
-          <td data-start-time="{{ meeting.start_time }}">{{meeting.time_remaining}}</td> <!-- Remove meeting.time_remaining -->
+          <td>
+            <div id="countdown-box">
+              <div class="spinner-border" role="status" ></div>
+            </div>
+        </td> 
           <td>{{ meeting.organizer }}</td>
           <td><a href="{{ meeting.join_link }}">Join</a></td>
         </tr>
@@ -54,36 +68,4 @@
 {% endblock %}
 
 
-{% block scripts %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  // Function to update time remaining for each meeting
-  function updateTimeRemaining() {
-    const now = new Date();
-    const meetingRows = document.querySelectorAll('#upcoming tbody tr');
-    
-    meetingRows.forEach(row => {
-      const startTimeStr = row.querySelector('[data-start-time]').getAttribute('data-start-time');
-      const startTime = new Date(startTimeStr);
-      const timeDifference = startTime - now;
 
-      if (timeDifference > 0) {
-        const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
-        row.querySelector('[data-start-time]').textContent = `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
-      } else {
-        row.querySelector('[data-start-time]').textContent = 'Meeting started';
-      }
-    });
-  }
-
-  // Initial call to update time remaining
-  updateTimeRemaining();
-
-  // Update time remaining every second
-  setInterval(updateTimeRemaining, 1000);
-});
-</script>
-{% endblock %}

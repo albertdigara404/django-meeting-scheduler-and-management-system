@@ -1,4 +1,13 @@
 {% extends 'base.html' %}
+
+{% load static %}
+
+{% block scripts %}
+
+  <script src="{% static 'main.js' %}" defer></script>
+
+{% endblock scripts %}
+
 {% block content %}
 
 
@@ -13,7 +22,7 @@
 
 
 <p class="card-text">
-<strong>Meeting start time and Date: </strong>{{ meeting.start_time }}
+<strong>Meeting start time and Date: </strong>{{ meeting.start_time|date:"M d, Y H:m:s" }}
 </p>
 
 <p class="card-text">
@@ -21,7 +30,12 @@
 </p>
 
 <p class="card-text">
-<strong>Time Remaining: </strong>{{ meeting.time_remaining }}
+<strong>Time Remaining: </strong>
+<div>{{meeting.title}} will take place on: </div>
+<div id="event-box">{{ meeting.start_time|date:"M d, Y H:m:s" }}</div>
+<div id="countdown-box">
+  <div class="spinner-border" role="status" ></div>
+</div>
 </p>
 
 <p class="card-text">
