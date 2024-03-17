@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+
+<!-- Tab buttons -->
+<ul class="nav nav-tabs" id="meetingTabs" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link" id="all-tab" data-toggle="tab" href="{% url 'meeting_home' %}" role="tab" aria-controls="all" aria-selected="false">All Meetings</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" id="upcoming-tab" data-toggle="tab" href="{% url 'upcoming_meetings' %}" role="tab" aria-controls="upcoming" aria-selected="true">Upcoming Meetings</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="past-tab" data-toggle="tab" href="{% url 'past_meetings' %}" role="tab" aria-controls="past" aria-selected="false">Past Meetings</a>
+    </li>
+  </ul>
+
+<!-- Tab content -->
+<div class="tab-content" id="meetingTabsContent">
+  <!-- Upcoming Meetings Tab -->
+  <div class="tab-pane fade show active" id="upcoming" role="tabpanel" aria-labelledby="upcoming-tab">
+    <table class="table table-striped table-hover table-bordered mt-3">
+      <!-- Table headers -->
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">Meeting Name</th>
+          <th scope="col">Start Time</th>
+          <th scope="col">Duration</th>
+          <th scope="col">Time Remaining</th>
+          <th scope="col">Organizer</th>
+          <th scope="col">Join Link</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Upcoming Meetings Data -->
+        {% for meeting in upcoming_meetings %}
+        <tr>
+          <td><a href="{% url 'meeting_details' meeting.id %}">{{ meeting.title }}</a></td>
+          <td>{{ meeting.start_time }}</td>
+          <td>{{ meeting.duration }}</td>
+          <td data-start-time="{{ meeting.start_time }}">{{meeting.time_remaining}}</td> <!-- Remove meeting.time_remaining -->
+          <td>{{ meeting.organizer }}</td>
+          <td><a href="{{ meeting.join_link }}">Join</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+{% endif %}
+
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Function to update time remaining for each meeting
+  function updateTimeRemaining() {
+    const now = new Date();
+    const meetingRows = document.querySelectorAll('#upcoming tbody tr');
+    
+    meetingRows.forEach(row => {
+      const startTimeStr = row.querySelector('[data-start-time]').getAttribute('data-start-time');
+      const startTime = new Date(startTimeStr);
+      const timeDifference = startTime - now;
+
+      if (timeDifference > 0) {
+        const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+        row.querySelector('[data-start-time]').textContent = `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+      } else {
+        row.querySelector('[data-start-time]').textContent = 'Meeting started';
+      }
+    });
+  }
+
+  // Initial call to update time remaining
+  updateTimeRemaining();
+
+  // Update time remaining every second
+  setInterval(updateTimeRemaining, 1000);
+});
+</script>
+{% endblock %}

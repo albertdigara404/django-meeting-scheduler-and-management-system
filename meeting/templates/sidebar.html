@@ -3,18 +3,20 @@
   <div class="position-sticky">
     <ul class="nav flex-column">
       <li class="nav-item">
-        <a class="nav-link active" href="#">Dashboard</a>
+        <a class="nav-link active" href="{% url 'home' %}">Dashboard</a>
       </li>
       <br>
       <li class="nav-item">
-        <a class="nav-link" href="#">Users</a>
+        <a class="nav-link" href="{% url 'meeting_home' %}">Meetings</a>
       </li>
       <br>
       <li class="nav-item">
-        <a class="nav-link" href="#">Meetings</a>
+        <a class="nav-link" href="{% url 'user_details_page' user.id %}">Profile</a>
       </li>
       <br>
-      <!-- Add more sidebar items as needed -->
+      <li class="nav-item btn-danger">
+        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+      </li>
     </ul>
   </div>
 </nav>

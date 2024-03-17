@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<div class="card">
+  <div class="card-header">
+    <strong>
+    	{{ meeting.title }} 
+	</strong>
+  </div>
+  <div class="card-body">
+
+
+
+<p class="card-text">
+<strong>Meeting start time and Date: </strong>{{ meeting.start_time }}
+</p>
+
+<p class="card-text">
+<strong>Meeting Duration: </strong>{{ meeting.duration }}
+</p>
+
+<p class="card-text">
+<strong>Time Remaining: </strong>{{ meeting.time_remaining }}
+</p>
+
+<p class="card-text">
+    <strong>Join: </strong>
+    <a href="{{meeting.join_link}}"><button type="button" class="btn btn-dark">Link to Join: <b>{{ meeting.title}}</b></button></a>
+</p>
+
+
+    
+    
+  </div>
+</div>
+
+<br/><br/>
+<a href="{% url 'meeting_home' %}" class="btn btn-secondary">Back</a>
+
+<a href="#" class="btn btn-secondary">Edit</a>
+		
+
+{% endblock content %}

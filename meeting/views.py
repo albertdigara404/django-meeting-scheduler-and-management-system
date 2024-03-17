@@ -2,13 +2,12 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
-
 from meeting.forms import AddUserForm, SignUpForm
 from .models import Profile
 from django.contrib.auth.models import User
-from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from datetime import datetime, timedelta
+from django.utils import timezone
 from .models import Meeting
 import requests
 import json
@@ -85,12 +84,34 @@ def delete_user(request, pk):
 	else:
 		messages.success(request, "You Must Be Logged In To Do That...")
 		return redirect('home')
+
+
+
+def update_user(request, pk):
+	if request.user.is_authenticated:
+		current_record = User.objects.get(id=pk)
+		form = AddUserForm(request.POST or None, instance=current_record)
+		if form.is_valid():
+			form.save()
+			messages.success(request, "User Has Been Updated!")
+			return redirect('home')
+		return render(request, 'update_user.html', {'form':form})
+	else:
+		messages.success(request, "You Must Be Logged In...")
+		return redirect('home')
       
 
 
-def user_details_page(request):
+def user_details_page(request, pk):
+    if request.user.is_authenticated:
+           # Look Up Records
+        user = User.objects.get(id=pk)
+        return render(request, 'user_details_page.html', {'user':user})
+    else:
+        messages.success(request, "You Must Be Logged In To View That Page...")
+        return redirect('home') 
+		
        
-       return render(request, 'users_details_page.html')
 
 
     
@@ -102,8 +123,120 @@ def logout_user(request):
 
 
 def meeting_home(request):
+    # Fetching all meetings
+    all_meetings = Meeting.objects.all()
+
+     # Calculate time remaining for each past meeting
+    for meeting in all_meetings:
+        time_difference = meeting.start_time - timezone.now()
+        if time_difference.total_seconds() < 0:
+            meeting.time_remaining = f"Overdue {time_difference.days} days ago"
+        else:
+            days = time_difference.days
+            hours, remainder = divmod(time_difference.seconds, 3600)
+            minutes, seconds = divmod(remainder, 60)
+
+            # Format time remaining as a string
+            time_remaining_str = f"{days} days, {hours} hours, {minutes} minutes, {seconds} seconds"
+
+            # Assign the formatted time remaining to the meeting object
+            meeting.time_remaining = time_remaining_str
+    
+    # Check if user is logged in
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        # Authenticate
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, "You Have Been Logged In!")
+            return redirect('home')
+        else:
+            messages.success(request, "There Was An Error Logging In, Please Try Again...")
+            return redirect('home')
+    else:
+        return render(request, 'meeting_home.html', {'all_meetings': all_meetings})
+    
+
+def upcoming_meetings(request):
+    # Filtering upcoming meetings
+    upcoming_meetings = Meeting.objects.filter(start_time__gte=timezone.now()).order_by('start_time')
+
+     # Calculate time remaining for each past meeting
+    for meeting in upcoming_meetings:
+        time_difference = meeting.start_time - timezone.now()
+        if time_difference.total_seconds() < 0:
+             meeting.time_remaining = f"Overdue {time_difference.days} days ago"
+        else:
+            days = time_difference.days
+            hours, remainder = divmod(time_difference.seconds, 3600)
+            minutes, seconds = divmod(remainder, 60)
+
+            # Format time remaining as a string
+            time_remaining_str = f"{days} days, {hours} hours, {minutes} minutes, {seconds} seconds"
+
+            # Assign the formatted time remaining to the meeting object
+            meeting.time_remaining = time_remaining_str
+
+    # Check if user is logged in
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        # Authenticate
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, "You Have Been Logged In!")
+            return redirect('home')
+        else:
+            messages.success(request, "There Was An Error Logging In, Please Try Again...")
+            return redirect('home')
+    else:
+        return render(request, 'upcoming.html', {'upcoming_meetings': upcoming_meetings,})
+    
+
+
+def past_meetings(request):
+    # Fetching past meetings
+    past_meetings = Meeting.objects.filter(start_time__lt=timezone.now()).order_by('-start_time')
+
+    # Calculate time remaining for each past meeting
+    for meeting in past_meetings:
+        time_difference = meeting.start_time - timezone.now()
+
+        if time_difference.total_seconds() < 0:
+             meeting.time_remaining = f"Overdue {time_difference.days} days ago"
+        else:
+            days = time_difference.days
+            hours, remainder = divmod(time_difference.seconds, 3600)
+            minutes, seconds = divmod(remainder, 60)
+
+            # Format time remaining as a string
+            time_remaining_str = f"{days} days, {hours} hours, {minutes} minutes, {seconds} seconds"
+
+            # Assign the formatted time remaining to the meeting object
+            meeting.time_remaining = time_remaining_str
+
+    # Check if user is logged in
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        # Authenticate
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, "You Have Been Logged In!")
+            return redirect('home')
+        else:
+            messages.success(request, "There Was An Error Logging In, Please Try Again...")
+            return redirect('home')
+    else:
+        return render(request, 'past.html', {'past_meetings': past_meetings})
+
       
-      return render(request, 'meeting_home.html')
+      
+    
 
 
 def schedule_meeting(request):
@@ -133,11 +266,35 @@ def schedule_meeting(request):
             # Save meeting details to the database or perform any other necessary actions
             Meeting.objects.create(title=title, start_time=start_time, duration=duration, organizer=organizer, join_link=join_url)
 
-            return HttpResponse(f"Meeting created successfully. Join URL: {join_url}")
+            messages.success(request, 'Meeting created successfully.')
+
+            return redirect('meeting_home')
         else:
             return HttpResponse("Failed to create meeting. Please try again.")
     else:
         return render(request, 'create_meeting.html')
+    
+
+def meeting_details(request, pk):
+    if request.user.is_authenticated:
+           # Look Up Records
+        meeting = Meeting.objects.get(id=pk)
+        return render(request, 'meeting_details.html', {'meeting':meeting})
+    else:
+        messages.success(request, "You Must Be Logged In To View That Page...")
+        return redirect('home')
+    
+
+def delete_meeting(request, pk):
+    if request.user.is_authenticated:
+          delete_meeting = Meeting.objects.get(id=pk)
+          delete_meeting.delete
+          messages.success(request, "Meeting Deleted Successfully...")
+          return redirect('meeting_home')
+    else:
+        messages.success(request, "You Must Be Logged In To Do That...")
+        return redirect('home')
+
 
 
 

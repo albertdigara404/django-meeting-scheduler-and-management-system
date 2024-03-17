@@ -7,13 +7,13 @@
 <!-- Tab buttons -->
 <ul class="nav nav-tabs" id="meetingTabs" role="tablist">
     <li class="nav-item">
-      <a class="nav-link active" id="all-tab" data-toggle="tab" href="{% url 'meeting_home' %}" role="tab" aria-controls="all" aria-selected="false">All Meetings</a>
+      <a class="nav-link" id="all-tab" data-toggle="tab" href="{% url 'meeting_home' %}" role="tab" aria-controls="all" aria-selected="false">All Meetings</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" id="upcoming-tab" data-toggle="tab" href="{% url 'upcoming_meetings' %}" role="tab" aria-controls="upcoming" aria-selected="true">Upcoming Meetings</a>
+      <a class="nav-link" id="upcoming-tab" data-toggle="tab" href="{% url 'upcoming_meetings' %}" role="tab" aria-controls="upcoming" aria-selected="false">Upcoming Meetings</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" id="past-tab" data-toggle="tab" href="{% url 'past_meetings' %}" role="tab" aria-controls="past" aria-selected="false">Past Meetings</a>
+      <a class="nav-link active" id="past-tab" data-toggle="tab" href="{% url 'past_meetings' %}" role="tab" aria-controls="past" aria-selected="true">Past Meetings</a>
     </li>
   </ul>
 
@@ -30,32 +30,31 @@
           <th scope="col">Duration</th>
           <th scope="col">Time Remaining</th>
           <th scope="col">Organizer</th>
-          <th scope="col">Join Link</th>
+          <!-- <th scope="col">Join Link</th> -->
         </tr>
       </thead>
       <tbody>
-        <!-- All Meetings Data -->
-        {% for meeting in all_meetings %}
+        <!-- Past Meetings Data -->
+        {% for meeting in past_meetings %}
         <tr>
           <td><a href="{% url 'meeting_details' meeting.id %}">{{ meeting.title }}</a></td>
           <td>{{ meeting.start_time }}</td>
           <td>{{ meeting.duration }}</td>
           <td>{{ meeting.time_remaining }}</td>
           <td>{{ meeting.organizer }}</td>
-          <td><a href="{{ meeting.join_link }}">Join</a></td>
+          <!-- <td><a href="{{ meeting.join_link }}">Join</a></td> -->
         </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
 
-
 {% endif %}
 
 {% endblock %}
 
-{% block scripts %}
+<!-- {% block scripts %}
 <script>
 
 </script>
-{% endblock %}
+{% endblock %} -->
