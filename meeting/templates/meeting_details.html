@@ -23,29 +23,27 @@
 
 <p class="card-text">
 <strong>Meeting start time and Date: </strong>{{ meeting.start_time|date:"M d, Y H:m:s" }}
-</p>
+</p><br>
 
 <p class="card-text">
 <strong>Meeting Duration: </strong>{{ meeting.duration }}
-</p>
+</p><br>
 
 <p class="card-text">
-<strong>Time Remaining: </strong>
-<div>{{meeting.title}} will take place on: </div>
-<div id="event-box">{{ meeting.start_time|date:"M d, Y H:m:s" }}</div>
+<strong>INFO</strong>
+<div><strong>{{meeting.title}} will take place on: </strong></div>
+<div id="event-box">{{ meeting.start_time|date:"M d, Y H:m:s" }}</div><br>
+<div><strong>Status/CountDown:</strong></div>
 <div id="countdown-box">
-  <div class="spinner-border" role="status" ></div>
-</div>
+  <div class="spinner-border" role="status"></div>
+</div><br><br>
 </p>
 
 <p class="card-text">
     <strong>Join: </strong>
     <a href="{{meeting.join_link}}"><button type="button" class="btn btn-dark">Link to Join: <b>{{ meeting.title}}</b></button></a>
-</p>
+</p><br>
 
-
-    
-    
   </div>
 </div>
 

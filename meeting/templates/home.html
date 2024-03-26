@@ -9,7 +9,14 @@
 <div class="container">
     
     <div class="d-grid gap-2 col-6 mx-auto ">
-        <a href="{% url 'create_meeting' %}" class="btn btn-success" type="button">Schedule Meeting</a>
+    
+
+        {% if user.is_superuser or user.is_staff %}
+            <a href="{% url 'create_meeting' %}" class="btn btn-success" type="button">Schedule Meeting</a>
+        {% endif %}
+
+    
+        
         <a href="{% url 'meeting_home' %}" class="btn btn-primary" type="button">Manage Meeting</a>
     </div>
 </div>
@@ -58,8 +65,6 @@
     <button type="submit" class="btn btn-secondary">Login</button>
   
   </form>
-  
-  
   
   {% endif %}
 

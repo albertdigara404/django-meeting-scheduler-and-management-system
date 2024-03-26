@@ -28,7 +28,7 @@
           <th scope="col">Meeting Name</th>
           <th scope="col">Start Time</th>
           <th scope="col">Duration</th>
-          <th scope="col">Time Remaining</th>
+          <!-- <th scope="col">Time Remaining</th> -->
           <th scope="col">Organizer</th>
           <th scope="col">Join Link</th>
         </tr>
@@ -40,7 +40,7 @@
           <td><a href="{% url 'meeting_details' meeting.id %}">{{ meeting.title }}</a></td>
           <td>{{ meeting.start_time }}</td>
           <td>{{ meeting.duration }}</td>
-          <td>{{ meeting.time_remaining }}</td>
+          <!-- <td>{{ meeting.time_remaining }}</td> -->
           <td>{{ meeting.organizer }}</td>
           <td><a href="{{ meeting.join_link }}">Join</a></td>
         </tr>

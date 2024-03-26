@@ -241,6 +241,9 @@ def past_meetings(request):
 
 def schedule_meeting(request):
     if request.method == "POST":
+
+        user = User.objects.all()
+
         title = request.POST.get('title')
         start_time_str = request.POST.get('start_time')
         start_time = datetime.strptime(start_time_str, '%Y-%m-%dT%H:%M')  # Parse the string to datetime

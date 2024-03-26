@@ -22,7 +22,7 @@ const myCount = setInterval(()=>{
     // console.log(seconds)
 
     if (diff > 0){
-        countDownBox.innerHTML = days + ' days,' + hours + ' hours,' + minutes + ' minutes,' + seconds + ' seconds.'
+        countDownBox.innerHTML = days + ' days, ' + hours + ' hours, ' + minutes + ' minutes, ' + seconds + ' seconds.'
     }else{
         clearInterval(myCount)
         countDownBox.innerHTML = 'Meeting is Overdue'

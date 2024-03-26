@@ -36,7 +36,7 @@
           <th scope="col">Meeting Name</th>
           <th scope="col">Start Time</th>
           <th scope="col">Duration</th>
-          <th scope="col">Time Remaining</th>
+          <!-- <th scope="col">Time Remaining</th> -->
           <th scope="col">Organizer</th>
           <th scope="col">Join Link</th>
         </tr>
@@ -46,15 +46,13 @@
         {% for meeting in upcoming_meetings %}
         <tr>
           <td><a href="{% url 'meeting_details' meeting.id %}">{{ meeting.title }}</a></td>
-          <td>
-            <div id="event-box">{{ meeting.start_time|date:"M d, Y H:m:s" }}</div>
-          </td>
+          <td>{{ meeting.start_time|date:"M d, Y H:m:s" }}</td>
           <td>{{ meeting.duration }}</td>
-          <td>
+          <!-- <td>
             <div id="countdown-box">
               <div class="spinner-border" role="status" ></div>
             </div>
-        </td> 
+        </td>  -->
           <td>{{ meeting.organizer }}</td>
           <td><a href="{{ meeting.join_link }}">Join</a></td>
         </tr>
