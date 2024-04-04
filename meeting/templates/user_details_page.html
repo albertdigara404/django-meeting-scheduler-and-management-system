@@ -29,6 +29,10 @@
 
 <br/><br/>
 <a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
+
+{% if user.is_superuser or user.is_staff %}
+  <a href="{% url 'update_user' user.id %}" class="btn btn-secondary">Update Details</a>
+{% endif %}
 		
 
 {% endblock %}

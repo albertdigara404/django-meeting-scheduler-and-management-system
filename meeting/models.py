@@ -10,6 +10,14 @@ class Meeting(models.Model):
     def __str__(self):
         return self.title
     
+
+class MeetingIdea(models.Model):
+    meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE)
+    idea = models.TextField()
+
+    def __str__(self):
+        return self.idea
+    
     
 
 class Profile(models.Model):
