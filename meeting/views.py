@@ -9,6 +9,8 @@ from googleapiclient.discovery import build
 from datetime import datetime, timedelta
 from django.utils import timezone
 from .models import Meeting
+from django.core.mail import send_mail
+from django.conf import settings
 import requests
 import json
 
@@ -270,6 +272,17 @@ def schedule_meeting(request):
             Meeting.objects.create(title=title, start_time=start_time, duration=duration, organizer=organizer, join_link=join_url)
 
             messages.success(request, 'Meeting created successfully.')
+
+            # Send email to all registered users
+            message = 'A meeting has been scheduled. Login to check status of the meeting.'
+            for user in User.objects.all():
+                send_mail(
+                    'MSMS',  # TITLE
+                    message,
+                    'settings.EMAIL_HOST_USER',
+                    [user.email],  # Send email to the user's email address
+                    fail_silently=False
+                )
 
             return redirect('meeting_home')
         else:
